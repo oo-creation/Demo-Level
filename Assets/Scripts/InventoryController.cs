@@ -13,7 +13,7 @@ public class InventoryController : MonoBehaviour
 	public float ItemRadius;
 
 	private bool _itemInRange;
-	private GameObject[] Carrying = new GameObject[4];
+	private ObjectScriptableObject[] Carrying = new ObjectScriptableObject[4];
 	private AudioSource _audioSource;
 	
 	private void Start()
@@ -35,9 +35,12 @@ public class InventoryController : MonoBehaviour
 				return;
 			}
 
-			Carrying[slotIndex] = detectedObject;
 			var script = detectedObject.GetComponent(typeof(ObjectItem)) as ObjectItem;
-			if (script != null) InventorySlots[slotIndex].sprite = script.ObjectSO.InventoryIcon;
+			if (script != null)
+			{
+				InventorySlots[slotIndex].sprite = script.ObjectSO.InventoryIcon;
+				Carrying[slotIndex] = script.ObjectSO;
+			}
 			_audioSource.Play();
 			Destroy(detectedObject);
 		}
@@ -47,6 +50,7 @@ public class InventoryController : MonoBehaviour
 	{
 		for (int i = 0; i < Carrying.Length; i++)
 		{
+			Debug.Log(Carrying[i]);
 			if (Carrying[i] == null)
 				return i;
 		}

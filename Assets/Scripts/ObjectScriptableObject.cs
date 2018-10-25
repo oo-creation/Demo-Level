@@ -8,5 +8,6 @@ public class ObjectScriptableObject : ScriptableObject
 {
 
     public Sprite InventoryIcon;
-    
+    public GameObject ObjectItself;
+
 }

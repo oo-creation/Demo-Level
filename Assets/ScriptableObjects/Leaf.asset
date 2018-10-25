@@ -9,6 +9,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4447ed41ec988e546b011c9336ad016a, type: 3}
-  m_Name: Rope
+  m_Name: Leaf
   m_EditorClassIdentifier: 
-  InventoryIcon: {fileID: 21300000, guid: ae0cdc11ad7c4e446a2433ff440bca3a, type: 3}
+  InventoryIcon: {fileID: 21300000, guid: c585d7bf7972feb46beb0b4b434b32b6, type: 3}
+  ObjectItself: {fileID: 1847886972188978, guid: 8201e5768e489184f82b3c755b1b44df,
+    type: 2}
