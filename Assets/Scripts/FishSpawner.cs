@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class FishSpawner : MonoBehaviour
 {
-	public Transform SpwawnPoint;
+	public List<Transform> SpwawnPoints;
+	public List<Transform> TargetPoints;
 	public GameObject FishPrefab;
 
 	private void Start()
@@ -14,9 +15,12 @@ public class FishSpawner : MonoBehaviour
 
 	private IEnumerator SpawnFishes()
 	{
-		Debug.Log("Start Coroutine");
-		Instantiate(FishPrefab, SpwawnPoint);
-		yield return new WaitForSeconds(Random.Range(1f, 5f));
-		
+		while (true)
+		{
+			var instance = Instantiate(FishPrefab, SpwawnPoints[Random.Range(0, SpwawnPoints.Count)]);
+			((SwimController) instance.GetComponent(typeof(SwimController))).TargetPoint =
+				TargetPoints[Random.Range(0, TargetPoints.Count)];
+			yield return new WaitForSeconds(Random.Range(1f, 5f));
+		}
 	}
 }

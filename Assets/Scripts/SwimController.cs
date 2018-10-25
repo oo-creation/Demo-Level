@@ -10,7 +10,7 @@ public class SwimController : MonoBehaviour
 
 	private float _wanderPoint = 0f;
 	private float _wanderSpeed = .05f;
-	
+
 	private void Update()
 	{
 		var velocity = MoveToTarget() + Wander();
