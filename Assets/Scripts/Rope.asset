@@ -11,4 +11,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4447ed41ec988e546b011c9336ad016a, type: 3}
   m_Name: Rope
   m_EditorClassIdentifier: 
-  InventoryIcon: {fileID: 0}
+  InventoryIcon: {fileID: 21300000, guid: ae0cdc11ad7c4e446a2433ff440bca3a, type: 3}
