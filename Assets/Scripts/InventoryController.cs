@@ -12,9 +12,10 @@ public class InventoryController : MonoBehaviour
 
 	public float ItemRadius;
 
-	private bool _itemInRange;
+	private bool _objectInRange;
 	private ObjectScriptableObject[] Carrying = new ObjectScriptableObject[4];
 	private AudioSource _audioSource;
+	private bool _carryingItems;
 	
 	private void Start()
 	{
@@ -32,23 +33,53 @@ public class InventoryController : MonoBehaviour
 	{
 		if (detectedObject != null && Input.GetKeyDown(KeyCode.F))
 		{
-			int slotIndex = FindEmptySlot();
-			if (slotIndex == -1)
+			if (detectedObject.gameObject.CompareTag("BoatObjects"))
 			{
-				TextBoxText.text = "Inventory full";
-				return;
-			}
-
-			var script = detectedObject.GetComponent(typeof(ObjectItem)) as ObjectItem;
-			if (script != null)
+				PickupBoatObject(detectedObject);
+			} 
+			else if (detectedObject.gameObject.CompareTag("BoatConstructor"))
 			{
-				InventorySlots[slotIndex].sprite = script.ObjectSO.InventoryIcon;
-				Carrying[slotIndex] = script.ObjectSO;
+				ConstructBoat(detectedObject);
 			}
-
-			_audioSource.Play();
-			Destroy(detectedObject);
 		}
+	}
+
+	private void ConstructBoat(GameObject detectedObject)
+	{
+		var boatConstructor = detectedObject.GetComponent(typeof(BoatConstructor)) as BoatConstructor;
+		if (boatConstructor == null) return;
+
+		for (var i = 0; i < Carrying.Length; i++)
+		{
+			if (Carrying[i] != null)
+			{
+				boatConstructor.ConstructStep();
+				Carrying[i] = null;
+			}
+		}
+
+		_carryingItems = false;
+	}
+
+	private void PickupBoatObject(GameObject detectedObject)
+	{
+		int slotIndex = FindEmptySlot();
+		if (slotIndex == -1)
+		{
+			TextBoxText.text = "Inventory full";
+			return;
+		}
+
+		var script = detectedObject.GetComponent(typeof(ObjectItem)) as ObjectItem;
+		if (script != null)
+		{
+			InventorySlots[slotIndex].sprite = script.ObjectSO.InventoryIcon;
+			Carrying[slotIndex] = script.ObjectSO;
+		}
+
+		_carryingItems = true;
+		_audioSource.Play();
+		Destroy(detectedObject);
 	}
 
 	private int FindEmptySlot()
@@ -65,20 +96,39 @@ public class InventoryController : MonoBehaviour
 
 	private GameObject DetectObjects()
 	{
-		_itemInRange = false;
+		_objectInRange = false;
 		var colliders = Physics.OverlapSphere(transform.position, ItemRadius);
 
 		foreach (var coll in colliders)
 		{
-			if (!coll.gameObject.CompareTag("BoatObjects")) continue;
+			if (coll.gameObject.CompareTag("BoatObjects"))
+			{
+				_objectInRange = true;
+				TextBox.enabled = true;
+				TextBoxText.text = "Pickup item with 'F'";
+				return coll.gameObject;
+			}
 
-			_itemInRange = true;
-			TextBox.enabled = true;
-			TextBoxText.text = "Pickup item with 'F'";
-			return coll.gameObject;
+			if (coll.gameObject.CompareTag("BoatConstructor"))
+			{
+				var boatConstructor = coll.gameObject.GetComponent(typeof(BoatConstructor)) as BoatConstructor;
+				if (boatConstructor == null) continue;
+				
+				_objectInRange = true;
+				TextBox.enabled = true;
+				
+				if (_carryingItems && !boatConstructor.BoatComplete)
+					TextBoxText.text = "Construct the boat with 'F'";
+				else if (!_carryingItems && !boatConstructor.BoatComplete)
+					TextBoxText.text = "Collect more items!";
+				else
+					TextBoxText.text = "You finished the boat! Get in and start your journey across";
+
+				return coll.gameObject;
+			}
 		}
 
-		if (!_itemInRange)
+		if (!_objectInRange)
 		{
 			TextBox.enabled = false;
 			TextBoxText.text = "";

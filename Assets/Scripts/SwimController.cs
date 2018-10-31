@@ -37,8 +37,6 @@ public class SwimController : MonoBehaviour
 		var targetDir = TargetPoint.position - _position;
 		var newDir = Vector3.RotateTowards(transform.forward, targetDir, Time.deltaTime, 0.0f);
 		transform.rotation = Quaternion.LookRotation(newDir);
-		
-		Debug.Log("Fish: " + this.name +"Pos" + _position + " velocity: " + velocity);
 	}
 
 	private Vector3 MoveToTarget()
