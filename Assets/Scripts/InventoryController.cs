@@ -12,10 +12,14 @@ public class InventoryController : MonoBehaviour
 
 	public float ItemRadius;
 
+	public List<string> Dialog;
+
 	private bool _objectInRange;
 	private ObjectScriptableObject[] Carrying = new ObjectScriptableObject[4];
 	private AudioSource _audioSource;
 	private bool _carryingItems;
+	private bool _inDialog;
+	private int _currentDialogText;
 	
 	private void Start()
 	{
@@ -26,7 +30,7 @@ public class InventoryController : MonoBehaviour
 
 	private void Update()
 	{
-		PickupItem(DetectObjects());
+		PickupItem(DetectObjectsAndShowMessage());
 	}
 
 	private void PickupItem(GameObject detectedObject)
@@ -41,7 +45,22 @@ public class InventoryController : MonoBehaviour
 			{
 				ConstructBoat(detectedObject);
 			}
+			else if (detectedObject.gameObject.CompareTag("WiseInsect"))
+			{
+				TalkWithWiseInsect(detectedObject);
+			}
 		}
+	}
+
+	private void TalkWithWiseInsect(GameObject detectedObject)
+	{
+		_inDialog = true;
+		TextBox.enabled = true;
+		TextBoxText.text = Dialog[_currentDialogText];
+
+		_currentDialogText++;
+		if (_currentDialogText >= Dialog.Count)
+			_currentDialogText = 0;
 	}
 
 	private void ConstructBoat(GameObject detectedObject)
@@ -94,7 +113,7 @@ public class InventoryController : MonoBehaviour
 		return -1;
 	}
 
-	private GameObject DetectObjects()
+	private GameObject DetectObjectsAndShowMessage()
 	{
 		_objectInRange = false;
 		var colliders = Physics.OverlapSphere(transform.position, ItemRadius);
@@ -103,10 +122,7 @@ public class InventoryController : MonoBehaviour
 		{
 			if (coll.gameObject.CompareTag("BoatObjects"))
 			{
-				_objectInRange = true;
-				TextBox.enabled = true;
-				TextBoxText.text = "Pickup item with 'F'";
-				return coll.gameObject;
+				return DisplayText(coll, "Pickup item with 'F'");
 			}
 
 			if (coll.gameObject.CompareTag("BoatConstructor"))
@@ -126,6 +142,13 @@ public class InventoryController : MonoBehaviour
 
 				return coll.gameObject;
 			}
+
+			if (coll.gameObject.CompareTag("WiseInsect"))
+			{
+				return _inDialog ? 
+					coll.gameObject : 
+					DisplayText(coll, "Press 'F' to talk to the wise insect");
+			}
 		}
 
 		if (!_objectInRange)
@@ -135,5 +158,13 @@ public class InventoryController : MonoBehaviour
 		}
 
 		return null;
+	}
+
+	private GameObject DisplayText(Collider coll, string message)
+	{
+		_objectInRange = true;
+		TextBox.enabled = true;
+		TextBoxText.text = message;
+		return coll.gameObject;
 	}
 }

@@ -23,6 +23,9 @@ public class BoatConstructor : MonoBehaviour
         else if (!Paddle2.activeSelf)
         {
             Paddle2.SetActive(true);
+        }
+        else
+        {
             BoatComplete = true;
         }
     }

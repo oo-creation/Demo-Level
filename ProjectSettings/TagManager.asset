@@ -8,6 +8,7 @@ TagManager:
   - TargetPoint
   - Fish
   - BoatConstructor
+  - WiseInsect
   layers:
   - Default
   - TransparentFX

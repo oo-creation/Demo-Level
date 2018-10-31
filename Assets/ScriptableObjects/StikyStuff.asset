@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4447ed41ec988e546b011c9336ad016a, type: 3}
+  m_Name: StikyStuff
+  m_EditorClassIdentifier: 
+  InventoryIcon: {fileID: 21300000, guid: 3e0469bcc8ea5bb44b6b7d0837ccb79f, type: 3}
+  ObjectItself: {fileID: 1549471757930900, guid: ee57ae71e4cd5cd45a4fffd0147441b1,
+    type: 2}
