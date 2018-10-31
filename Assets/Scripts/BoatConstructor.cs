@@ -8,7 +8,14 @@ public class BoatConstructor : MonoBehaviour
     public GameObject Paddle1;
     public GameObject Paddle2;
 
-    public bool BoatComplete;
+    [HideInInspector] public bool BoatComplete;
+
+    private AudioSource _audioSource;
+    
+    private void Start()
+    {
+        _audioSource = GetComponent<AudioSource>();
+    }
 
     public void ConstructStep()
     {
@@ -26,6 +33,7 @@ public class BoatConstructor : MonoBehaviour
         }
         else
         {
+            _audioSource.Play();
             BoatComplete = true;
         }
     }

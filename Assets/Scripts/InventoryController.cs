@@ -73,6 +73,7 @@ public class InventoryController : MonoBehaviour
 			if (Carrying[i] != null)
 			{
 				boatConstructor.ConstructStep();
+				InventorySlots[i].sprite = TransparentImage;
 				Carrying[i] = null;
 			}
 		}
