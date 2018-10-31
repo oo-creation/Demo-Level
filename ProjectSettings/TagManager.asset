@@ -6,6 +6,7 @@ TagManager:
   tags:
   - BoatObjects
   - TargetPoint
+  - Fish
   layers:
   - Default
   - TransparentFX

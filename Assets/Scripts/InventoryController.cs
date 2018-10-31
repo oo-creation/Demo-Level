@@ -25,7 +25,11 @@ public class InventoryController : MonoBehaviour
 
 	private void Update()
 	{
-		GameObject detectedObject = DetectObjects();
+		PickupItem(DetectObjects());
+	}
+
+	private void PickupItem(GameObject detectedObject)
+	{
 		if (detectedObject != null && Input.GetKeyDown(KeyCode.F))
 		{
 			int slotIndex = FindEmptySlot();
@@ -41,6 +45,7 @@ public class InventoryController : MonoBehaviour
 				InventorySlots[slotIndex].sprite = script.ObjectSO.InventoryIcon;
 				Carrying[slotIndex] = script.ObjectSO;
 			}
+
 			_audioSource.Play();
 			Destroy(detectedObject);
 		}

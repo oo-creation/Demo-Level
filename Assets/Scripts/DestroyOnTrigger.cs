@@ -2,9 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DestroyOnTrigger : MonoBehaviour {
+[RequireComponent(typeof(Component))]
+public class DestroyOnTrigger : MonoBehaviour
+{
+    public string TagToDestroy;
+    
     private void OnTriggerStay(Collider other)
     {
-        Destroy(other.gameObject);
+        if (other.gameObject.CompareTag(TagToDestroy))
+            Destroy(other.gameObject);
     }
 }
