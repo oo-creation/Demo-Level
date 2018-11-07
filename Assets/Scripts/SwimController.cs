@@ -25,7 +25,7 @@ public class SwimController : MonoBehaviour
     {
         _rb = GetComponent<Rigidbody>();
         _startY = transform.position.y;
-        Destroy(this, AutoDestroyTimer);
+        Destroy(gameObject, AutoDestroyTimer);
     }
 
     private void Update()
@@ -41,6 +41,7 @@ public class SwimController : MonoBehaviour
         // Calculate rotation and turn
         var targetDir = TargetPoint.position - _position;
         var newDir = Vector3.RotateTowards(transform.forward, targetDir, Time.deltaTime, 0.0f);
+        newDir.y = 0f;
         transform.rotation = Quaternion.LookRotation(newDir);
     }
 
