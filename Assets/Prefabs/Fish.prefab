@@ -116,6 +116,8 @@ MonoBehaviour:
   WanderRadius: 0.12
   TargetPoint: {fileID: 0}
   AutoDestroyTimer: 30
+  _normalMaterial: {fileID: 2100000, guid: 2ef201864e272f148a2fada3e4044868, type: 2}
+  _highlightMaterial: {fileID: 2100000, guid: e8cf662dd0228fe449767e1edb478fdf, type: 2}
 --- !u!136 &136638849476766064
 CapsuleCollider:
   m_ObjectHideFlags: 1

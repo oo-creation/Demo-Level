@@ -9,6 +9,7 @@ public class InventoryController : MonoBehaviour
 	public Image TextBox;
 	public Text TextBoxText;
 	public Sprite TransparentImage;
+	public int MaxMessagesForAttachingFishes;
 
 	public float ItemRadius;
 
@@ -19,6 +20,7 @@ public class InventoryController : MonoBehaviour
 	private AudioSource _audioSource;
 	private bool _carryingItems;
 	private bool _inDialog;
+	private int _attachToFishCounter = 0;
 	private int _currentDialogText;
 	
 	private void Start()
@@ -167,5 +169,19 @@ public class InventoryController : MonoBehaviour
 		TextBox.enabled = true;
 		TextBoxText.text = message;
 		return coll.gameObject;
+	}
+
+	public void AttachToFishMessage(GameObject fish)
+	{
+		Debug.Log("Show message");
+		
+		TextBox.enabled = true;
+		TextBoxText.text = "Press 'F' to latch on the fish!";
+	}
+
+	public void RemoveAttachToFishMessage(GameObject fish)
+	{
+		TextBox.enabled = false;
+		TextBoxText.text = "";
 	}
 }

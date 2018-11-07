@@ -9,12 +9,18 @@ public class SwimController : MonoBehaviour
     public Transform TargetPoint;
     public float AutoDestroyTimer = 30;
 
+    public Material _normalMaterial;
+    public Material _highlightMaterial;
+
     private float _wanderPoint = 0f;
     private float _wanderSpeed = .03f;
     private Rigidbody _rb;
     private float _startY;
     private Vector3 _position;
 
+    private float _radiusToBoat;
+    private GameObject _boat;
+    
     private void Start()
     {
         _rb = GetComponent<Rigidbody>();
@@ -60,8 +66,7 @@ public class SwimController : MonoBehaviour
     {
         if (fishObject == gameObject)
         {
-            // Highlight
-            Debug.DrawLine(transform.position, transform.position + Vector3.up * 50);
+            GetComponent<Renderer>().material = _highlightMaterial;
         }
     }
     
@@ -69,7 +74,7 @@ public class SwimController : MonoBehaviour
     {
         if (fishObject == gameObject)
         {
-            //RemoveHighlight
+            GetComponent<Renderer>().material = _normalMaterial;
         }
     }
 }

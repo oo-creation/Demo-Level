@@ -10,6 +10,7 @@ public class BoatController : MonoBehaviour
 	public GameObject BoatConstructor;
 	public float MaxSpeed;
 	public float FishDetectionRadius;
+	public float MaxRopeDistance;
 	public GameObject RopeAttachment;
 	
 	[HideInInspector] public UnityEvent BoatEntered;
@@ -24,6 +25,7 @@ public class BoatController : MonoBehaviour
 	private Rigidbody _rb;
 	private BoatConstructor _boatConstructor;
 	private Cable_Procedural_Simple _CableProceduralSimple;
+	private GameObject nearestFish;
 
 	private void Start()
 	{
@@ -42,24 +44,10 @@ public class BoatController : MonoBehaviour
 
 	private void Update()
 	{
-		var nearestFish = GetNearestFish();
-		if (nearestFish != null)
-		{
-			HighlightFishToAttach.Invoke(nearestFish);
-		}
+		GetNearestFish();
 
-		if (Input.GetKeyDown(KeyCode.F) && nearestFish != null)
-		{
-			_fishAttachedTo = nearestFish;
-			_latchedOn = true;
-			Debug.Log("Attached to Fish!");
-		}
-		else if (Input.GetKeyDown(KeyCode.F))
-		{
-			_latchedOn = false;
-			_fishAttachedTo = null;
-		}
-		
+		AttachAndDetach();
+
 		if (_boatConstructor.BoatComplete && _characterInBoat)
 		{
 			if (!_latchedOn)
@@ -73,10 +61,43 @@ public class BoatController : MonoBehaviour
 				_CableProceduralSimple.endPointTransform = _fishAttachedTo.transform.position + Vector3.up * 6;
 			}
 		}
-		
 	}
 
-	private GameObject GetNearestFish()
+	private void AttachAndDetach()
+	{
+		if (Input.GetKeyDown(KeyCode.F) && nearestFish != null)
+		{
+			_fishAttachedTo = nearestFish;
+			_latchedOn = true;
+			Debug.Log("Attached to Fish!");
+		}
+		else if (Input.GetKeyDown(KeyCode.F))
+		{
+			_latchedOn = false;
+			_fishAttachedTo = null;
+		}
+
+		if (_fishAttachedTo != null &&
+		    Vector3.Distance(transform.position, _fishAttachedTo.transform.position) > MaxRopeDistance)
+		{
+			_latchedOn = false;
+			_fishAttachedTo = null;
+		}
+	}
+
+	private void GetNearestFish()
+	{
+		var lastNearestFish = nearestFish;
+		nearestFish = GetNearestFishInSphere();
+		if (nearestFish != lastNearestFish)
+			RemoveHighLight.Invoke(lastNearestFish);
+		if (nearestFish != null)
+		{
+			HighlightFishToAttach.Invoke(nearestFish);
+		}
+	}
+
+	private GameObject GetNearestFishInSphere()
 	{
 		var colliders = Physics.OverlapSphere(transform.position, FishDetectionRadius);
 		GameObject nearestShark = null;

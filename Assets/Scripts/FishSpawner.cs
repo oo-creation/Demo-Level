@@ -7,16 +7,18 @@ public class FishSpawner : MonoBehaviour
 	public float MinWaitTime;
 	public float MaxWaitTime;
 
-	public List<Transform> SpwawnPoints;
-	public List<Transform> TargetPoints;
+	public List<GameObject> SpawnPoints;
 	public GameObject FishPrefab;
 	public GameObject BoatController;
+	public GameObject PlayerGameObject;
 
 	private BoatController _boatController;
+	private InventoryController _inventoryController;
 
 	private void Start()
 	{
 		_boatController = (BoatController) BoatController.GetComponent(typeof(BoatController));
+		_inventoryController = (InventoryController) PlayerGameObject.GetComponent(typeof(InventoryController));
 		StartCoroutine(SpawnFishes());
 	}
 
@@ -24,11 +26,16 @@ public class FishSpawner : MonoBehaviour
 	{
 		while (true)
 		{
-			var instance = Instantiate(FishPrefab, SpwawnPoints[Random.Range(0, SpwawnPoints.Count)]);
+			var spawnPoint = SpawnPoints[Random.Range(0, SpawnPoints.Count)];
+			var targetPoints = ((TargetPointList) spawnPoint.GetComponent(typeof(TargetPointList))).TargetPoints;
+			
+			var instance = Instantiate(FishPrefab, spawnPoint.transform);
 			var controller = (SwimController) instance.GetComponent(typeof(SwimController));
-			controller.TargetPoint =TargetPoints[Random.Range(0, TargetPoints.Count)];
+			
+			controller.TargetPoint = targetPoints[Random.Range(0, targetPoints.Count)];
 			_boatController.HighlightFishToAttach.AddListener(controller.HighlightFish);
 			_boatController.RemoveHighLight.AddListener(controller.RemoveHighlight);
+			
 			yield return new WaitForSeconds(Random.Range(MinWaitTime, MaxWaitTime));
 		}
 	}
