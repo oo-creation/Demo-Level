@@ -16,14 +16,13 @@ public class BoatConstructor : MonoBehaviour
     private void Start()
     {
         _audioSource = GetComponent<AudioSource>();
-        BoatComplete = true; //TODO set to false and disable boat
     }
 
     public void ConstructStep()
     {
-        if (!Boat.activeSelf)
+        if (!Boat.GetComponent<MeshRenderer>().enabled)
         {
-            Boat.SetActive(true);
+            Boat.GetComponent<MeshRenderer>().enabled = true;
         }
         else if (!Paddle1.activeSelf)
         {
