@@ -12,6 +12,8 @@ public class CharacterBoatEntering : MonoBehaviour
         {
             transform.parent = other.transform;
             ((BoatController) other.gameObject.GetComponent(typeof(BoatController))).BoatEntered.Invoke();
+
+            StartCoroutine(DisplayMessage());
         }
     }
 
@@ -34,5 +36,13 @@ public class CharacterBoatEntering : MonoBehaviour
             transform.parent = null;
             ((BoatController) other.gameObject.GetComponent(typeof(BoatController))).BoatLeft.Invoke();
         }
+    }
+
+    private IEnumerator DisplayMessage()
+    {
+        yield return new WaitForSeconds(1.5f);
+        ((InventoryController) gameObject.GetComponent(typeof(InventoryController))).AttachToFishMessage();
+        yield return new WaitForSeconds(5);
+        ((InventoryController) gameObject.GetComponent(typeof(InventoryController))).RemoveAttachToFishMessage();
     }
 }

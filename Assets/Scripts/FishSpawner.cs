@@ -10,15 +10,12 @@ public class FishSpawner : MonoBehaviour
 	public List<GameObject> SpawnPoints;
 	public GameObject FishPrefab;
 	public GameObject BoatController;
-	public GameObject PlayerGameObject;
 
 	private BoatController _boatController;
-	private InventoryController _inventoryController;
 
 	private void Start()
 	{
 		_boatController = (BoatController) BoatController.GetComponent(typeof(BoatController));
-		_inventoryController = (InventoryController) PlayerGameObject.GetComponent(typeof(InventoryController));
 		StartCoroutine(SpawnFishes());
 	}
 

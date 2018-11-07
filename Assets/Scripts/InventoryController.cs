@@ -9,7 +9,7 @@ public class InventoryController : MonoBehaviour
 	public Image TextBox;
 	public Text TextBoxText;
 	public Sprite TransparentImage;
-	public int MaxMessagesForAttachingFishes;
+	public Transform GoalTransform;
 
 	public float ItemRadius;
 
@@ -22,6 +22,7 @@ public class InventoryController : MonoBehaviour
 	private bool _inDialog;
 	private int _attachToFishCounter = 0;
 	private int _currentDialogText;
+	private bool _displayingMessage;
 	
 	private void Start()
 	{
@@ -52,6 +53,19 @@ public class InventoryController : MonoBehaviour
 				TalkWithWiseInsect(detectedObject);
 			}
 		}
+		else if (detectedObject != null && Input.GetButton("Jump"))
+		{
+			if (detectedObject.gameObject.CompareTag("Goal"))
+			{
+				GoToShore();
+			}
+		}
+	}
+
+	private void GoToShore()
+	{
+		transform.position = GoalTransform.position;
+		transform.rotation = GoalTransform.rotation;
 	}
 
 	private void TalkWithWiseInsect(GameObject detectedObject)
@@ -146,6 +160,11 @@ public class InventoryController : MonoBehaviour
 				return coll.gameObject;
 			}
 
+			if (coll.gameObject.CompareTag("Goal"))
+			{
+				return DisplayText(coll, "Press 'Space' to jump out of the boat!");
+			}
+
 			if (coll.gameObject.CompareTag("WiseInsect"))
 			{
 				return _inDialog ? 
@@ -154,7 +173,7 @@ public class InventoryController : MonoBehaviour
 			}
 		}
 
-		if (!_objectInRange)
+		if (!_objectInRange && !_displayingMessage)
 		{
 			TextBox.enabled = false;
 			TextBoxText.text = "";
@@ -171,16 +190,18 @@ public class InventoryController : MonoBehaviour
 		return coll.gameObject;
 	}
 
-	public void AttachToFishMessage(GameObject fish)
+	public void AttachToFishMessage()
 	{
-		Debug.Log("Show message");
+		_displayingMessage = true;
 		
 		TextBox.enabled = true;
-		TextBoxText.text = "Press 'F' to latch on the fish!";
+		TextBoxText.text = "When a fish turns RED. Then press 'F' to latch on to the fish!";
 	}
 
-	public void RemoveAttachToFishMessage(GameObject fish)
+	public void RemoveAttachToFishMessage()
 	{
+		_displayingMessage = false;
+		
 		TextBox.enabled = false;
 		TextBoxText.text = "";
 	}

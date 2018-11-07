@@ -10,6 +10,7 @@ TagManager:
   - BoatConstructor
   - WiseInsect
   - Boat
+  - Goal
   layers:
   - Default
   - TransparentFX
