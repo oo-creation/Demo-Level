@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class BoatConstructor : MonoBehaviour
@@ -15,6 +16,7 @@ public class BoatConstructor : MonoBehaviour
     private void Start()
     {
         _audioSource = GetComponent<AudioSource>();
+        BoatComplete = true; //TODO set to false and disable boat
     }
 
     public void ConstructStep()
