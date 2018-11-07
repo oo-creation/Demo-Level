@@ -66,6 +66,7 @@ public class InventoryController : MonoBehaviour
 	{
 		transform.position = GoalTransform.position;
 		transform.rotation = GoalTransform.rotation;
+		PlaySound.Play();
 	}
 
 	private void TalkWithWiseInsect(GameObject detectedObject)
