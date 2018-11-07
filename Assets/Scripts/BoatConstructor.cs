@@ -12,10 +12,11 @@ public class BoatConstructor : MonoBehaviour
     [HideInInspector] public bool BoatComplete;
 
     private AudioSource _audioSource;
-    
+
     private void Start()
     {
         _audioSource = GetComponent<AudioSource>();
+        Boat.GetComponent<MeshRenderer>().enabled = false;
     }
 
     public void ConstructStep()

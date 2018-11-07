@@ -27,6 +27,12 @@ public class BoatController : MonoBehaviour
 	private Cable_Procedural_Simple _CableProceduralSimple;
 	private GameObject nearestFish;
 
+	private void Awake()
+	{
+		HighlightFishToAttach = new AttachToFishEvent();
+		RemoveHighLight = new DetachFromFishEvent();
+	}
+
 	private void Start()
 	{
 		_startY = transform.position.y;
@@ -38,8 +44,6 @@ public class BoatController : MonoBehaviour
 		BoatEntered.AddListener(EnteredBoat);
 		BoatLeft = new UnityEvent();
 		BoatLeft.AddListener(LeftBoat);
-		HighlightFishToAttach = new AttachToFishEvent();
-		RemoveHighLight = new DetachFromFishEvent();
 	}
 
 	private void Update()
