@@ -10,9 +10,12 @@ public class BoatController : MonoBehaviour
 	public GameObject BoatConstructor;
 	public float MaxSpeed;
 	public float FishDetectionRadius;
+	public GameObject RopeAttachment;
 	
 	[HideInInspector] public UnityEvent BoatEntered;
 	[HideInInspector] public UnityEvent BoatLeft;
+	[HideInInspector] public AttachToFishEvent HighlightFishToAttach;
+	[HideInInspector] public DetachFromFishEvent RemoveHighLight;
 
 	private bool _latchedOn;
 	private GameObject _fishAttachedTo;
@@ -20,29 +23,55 @@ public class BoatController : MonoBehaviour
 	private float _startY;
 	private Rigidbody _rb;
 	private BoatConstructor _boatConstructor;
+	private Cable_Procedural_Simple _CableProceduralSimple;
 
 	private void Start()
 	{
 		_startY = transform.position.y;
 		_rb = GetComponent<Rigidbody>();
 		_boatConstructor = BoatConstructor.GetComponent(typeof(BoatConstructor)) as BoatConstructor;
+		_CableProceduralSimple = RopeAttachment.GetComponent(typeof(Cable_Procedural_Simple)) as Cable_Procedural_Simple;
 		
 		BoatEntered = new UnityEvent();
 		BoatEntered.AddListener(EnteredBoat);
 		BoatLeft = new UnityEvent();
 		BoatLeft.AddListener(LeftBoat);
+		HighlightFishToAttach = new AttachToFishEvent();
+		RemoveHighLight = new DetachFromFishEvent();
 	}
 
 	private void Update()
 	{
 		var nearestFish = GetNearestFish();
+		if (nearestFish != null)
+		{
+			HighlightFishToAttach.Invoke(nearestFish);
+		}
+
+		if (Input.GetKeyDown(KeyCode.F) && nearestFish != null)
+		{
+			_fishAttachedTo = nearestFish;
+			_latchedOn = true;
+			Debug.Log("Attached to Fish!");
+		}
+		else if (Input.GetKeyDown(KeyCode.F))
+		{
+			_latchedOn = false;
+			_fishAttachedTo = null;
+		}
 		
 		if (_boatConstructor.BoatComplete && _characterInBoat)
 		{
 			if (!_latchedOn)
+			{
 				FloatAway();
+				_CableProceduralSimple.endPointTransform = Vector3.zero;
+			}
 			else
-				FollowShark();
+			{
+				FollowFish();
+				_CableProceduralSimple.endPointTransform = _fishAttachedTo.transform.position + Vector3.up * 6;
+			}
 		}
 		
 	}
@@ -55,24 +84,47 @@ public class BoatController : MonoBehaviour
 
 		foreach (var coll in colliders)
 		{
-			var dist = Vector3.Distance(transform.position, coll.gameObject.transform.position);
-
-			if (dist < closestDistance && coll.gameObject != _fishAttachedTo)
+			if (coll.gameObject.CompareTag("Fish"))
 			{
-				nearestShark = coll.gameObject;
-				closestDistance = dist;
+				var dist = Vector3.Distance(transform.position, coll.gameObject.transform.position);
+
+				if (dist < closestDistance && coll.gameObject != _fishAttachedTo)
+				{
+					nearestShark = coll.gameObject;
+					closestDistance = dist;
+				}
 			}
 		}
 
 		return nearestShark;
 	}
 
-	private void FollowShark()
+	private void FollowFish()
 	{
-		var position = transform.position;
+		Debug.Log("Follow fish");
+		
+		var velocity = Vector3.MoveTowards(transform.position, _fishAttachedTo.transform.position, MaxSpeed * Time.deltaTime);;
+		velocity.y = _startY;
 
-		var rigidbodyOfFish = _fishAttachedTo.GetComponent<Rigidbody>();
-		var velocity = rigidbodyOfFish.velocity;
+		var rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(_fishAttachedTo.transform.position - transform.position), Time.deltaTime);
+		rotation.x = 0f;
+		rotation.z = 0f;
+		transform.rotation = rotation;
+		_rb.MovePosition(velocity);
+	}
+
+	private void FloatAway()
+	{
+		var position = transform.position; 
+		
+		var velocity = Vector3.MoveTowards(position, TargetPoint.position, MaxSpeed * Time.deltaTime);;
+		velocity.y = _startY;
+		
+		var targetDir = TargetPoint.position - position;
+		var newDir = Vector3.RotateTowards(transform.forward, targetDir, Time.deltaTime, 0.0f);
+		
+		transform.rotation = Quaternion.LookRotation(newDir);
+		_rb.MovePosition(velocity);	
 	}
 
 	private void EnteredBoat()
@@ -84,22 +136,11 @@ public class BoatController : MonoBehaviour
 	{
 		_characterInBoat = false;
 	}
+}
 
-	private void FloatAway()
-	{
-		var position = transform.position; 
-		
-		var velocity = Vector3.MoveTowards(position, TargetPoint.position, MaxSpeed * Time.deltaTime);;
-		velocity.y = _startY;
-		_rb.MovePosition(velocity);	
-		
-		var targetDir = TargetPoint.position - position;
-		var newDir = Vector3.RotateTowards(transform.forward, targetDir, Time.deltaTime, 0.0f);
-		transform.rotation = Quaternion.LookRotation(newDir);
-	}
-
-	private void OnTriggerEnter(Collider other)
-	{
-		
-	}
+public class AttachToFishEvent : UnityEvent<GameObject>
+{
+}
+public class DetachFromFishEvent : UnityEvent<GameObject>
+{
 }

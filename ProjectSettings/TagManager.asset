@@ -9,6 +9,7 @@ TagManager:
   - Fish
   - BoatConstructor
   - WiseInsect
+  - Boat
   layers:
   - Default
   - TransparentFX
